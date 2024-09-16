@@ -29,7 +29,12 @@ exports.getTourById = async (req, res) => {
 
 // Tur oluşturma (Admin için)
 exports.createTour = async (req, res) => {
-  const newTour = new Tour(req.body);
-  await newTour.save();
-  res.status(201).json(newTour);
+  try {
+    const newTour = new Tour(req.body);
+    const savedTour = await newTour.save();
+    res.status(201).json(savedTour);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 };
+

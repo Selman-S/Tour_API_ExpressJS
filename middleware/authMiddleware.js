@@ -21,7 +21,10 @@ exports.protect = async (req, res, next) => {
 
 // Yetkilendirme kontrolü
 exports.authorize = (...roles) => {
+ 
   return (req, res, next) => {
+    console.log("roles",roles);
+    
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({ message: 'Bu işlemi yapmak için yetkiniz yok.' });
     }

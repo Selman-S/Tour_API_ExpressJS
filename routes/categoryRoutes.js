@@ -7,10 +7,14 @@ router.get('/', categoryController.getAllCategories);
 router.get('/:id/subcategories', categoryController.getSubCategories);
 
 // Admin rotaları
+// router.post(
+//   '/',
+//   authMiddleware.protect,
+//   authMiddleware.authorize('admin'),
+//   categoryController.createCategory
+// );
 router.post(
   '/',
-  authMiddleware.protect,
-  authMiddleware.authorize('admin'),
   categoryController.createCategory
 );
 
