@@ -1,17 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const { protect, adminProtect } = require('../middlewares/authMiddleware');
+const permissions = require('../middlewares/permissions');
 
-// Kullanıcı CRUD işlemleri
-router.get('/profile', protect, userController.getUserProfile); // Kullanıcı profilini getir
-router.put('/profile', protect, userController.updateUserProfile); // Kullanıcı profilini güncelle
-router.delete('/profile', protect, userController.deleteUser); // Kullanıcı hesabını sil
+// Kullanıcı rolü güncelleme (sadece admin)
+router.put('/role', permissions.isLogin, permissions.isAdmin, userController.updateUserRole);
 
-// Admin tarafından tüm kullanıcıları listeleme
-router.get('/', protect, adminProtect, userController.listUsers);
+// Tüm kullanıcı  listesini gösterme (sadece admin)
+router.get('/users', permissions.isLogin, permissions.isAdmin, userController.listUsers);
 
-// Kullanıcı oluşturma (admin tarafından)
-router.post('/', protect, adminProtect, userController.createUser);
+// Tüm  acenta listesini gösterme (sadece admin)
+router.get('/agents', permissions.isLogin, permissions.isAdmin, userController.listAgents);
+
+// Tüm  acenta listesini gösterme (sadece admin)
+router.get('/admins', permissions.isLogin, permissions.isAdmin, userController.listAdmins);
+
+// Kullanıcı silme (sadece admin)
+router.delete('/:id', permissions.isLogin, permissions.isAdmin, userController.deleteUser);
 
 module.exports = router;

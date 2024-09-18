@@ -30,6 +30,15 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    enum: ['admin', 'agent', 'user'], // Kullanıcı rolleri
+    default: 'user', // Varsayılan rol user
+  },
+  isActive: {
+    type: Boolean,
+    default: true, // Varsayılan olarak aktif
+  }
 
 }, { collection: 'users', timestamps: true });
 
@@ -53,3 +62,6 @@ UserSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 module.exports = mongoose.model('User', UserSchema);
+
+
+

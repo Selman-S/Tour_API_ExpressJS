@@ -1,13 +1,12 @@
-// controllers/authController.js
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
 // Access token oluşturma fonksiyonu
-const generateAccessToken = (userId) => {
+const generateAccessToken = (userId, role) => {
   return jwt.sign(
-    { id: userId },
+    { id: userId, role },
     process.env.JWT_SECRET,
-    { expiresIn: '15m' } // Erişim token'ı 15 dakika geçerli
+    { expiresIn: '15m' }
   );
 };
 
@@ -16,21 +15,25 @@ const generateRefreshToken = (userId, rememberMe) => {
   return jwt.sign(
     { id: userId },
     process.env.JWT_REFRESH_SECRET,
-    { expiresIn: rememberMe ? '7d' : '1d' } // RememberMe varsa 7 gün, yoksa 1 gün geçerli
+    { expiresIn: rememberMe ? '7d' : '1d' }
   );
 };
 
 // Kullanıcı kayıt fonksiyonu
 exports.register = async (req, res, next) => {
-  const { username, email, password } = req.body;
-
   try {
+    const { username, email, password } = req.body;
+
+    // İlk kullanıcı admin, diğerleri user olacak
+    const isFirstUser = (await User.countDocuments({})) === 0;
+    const role = isFirstUser ? 'admin' : 'user';
+
     // Yeni kullanıcı oluştur
-    const user = await User.create({ username, email, password });
+    const user = await User.create({ username, email, password, role });
 
     // Token'ları oluştur
-    const accessToken = generateAccessToken(user._id);
-    const refreshToken = generateRefreshToken(user._id, false); // rememberMe false varsayılan
+    const accessToken = generateAccessToken(user._id, user.role);
+    const refreshToken = generateRefreshToken(user._id, false);
 
     res.status(201).json({
       success: true,
@@ -40,34 +43,25 @@ exports.register = async (req, res, next) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        role: user.role,
       }
     });
   } catch (err) {
-    next(err); // Hata olursa errorMiddleware'e aktar
+    next(err);
   }
 };
 
 // Kullanıcı giriş fonksiyonu
 exports.login = async (req, res, next) => {
-  const { email, password, rememberMe } = req.body;
-
   try {
-    // Kullanıcıyı email ile bul
+    const { email, password, rememberMe } = req.body;
+
     const user = await User.findOne({ email });
-
-    if (!user) {
+    if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: 'Geçersiz e-posta veya şifre' });
     }
 
-    // Şifreyi doğrula
-    const isMatch = await user.comparePassword(password);
-
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Geçersiz e-posta veya şifre' });
-    }
-
-    // Token'ları oluştur
-    const accessToken = generateAccessToken(user._id);
+    const accessToken = generateAccessToken(user._id, user.role);
     const refreshToken = generateRefreshToken(user._id, rememberMe);
 
     res.status(200).json({
@@ -78,10 +72,11 @@ exports.login = async (req, res, next) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        role: user.role,
       }
     });
   } catch (err) {
-    next(err); // Hata olursa errorMiddleware'e aktar
+    next(err);
   }
 };
 
@@ -118,3 +113,6 @@ exports.refreshToken = async (req, res, next) => {
     next(err); // Hata olursa errorMiddleware'e aktar
   }
 };
+
+
+
