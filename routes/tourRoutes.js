@@ -8,5 +8,6 @@ router.post('/', permissions.isLogin, permissions.isAgent, tourController.create
 
 // Turu onaylama (sadece admin)
 router.put('/approve/:id', permissions.isLogin, permissions.isAdmin, tourController.approveTour);
+router.delete('/:id', permissions.isLogin, permissions.isAdmin, tourController.deleteTour);
 
 module.exports = router;

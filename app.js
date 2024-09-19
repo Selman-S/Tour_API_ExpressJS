@@ -15,6 +15,8 @@ dotenv.config();
 const app = express();
 
 // Middleware'ler
+
+app.use(require('./middlewares/authenticationMiddleware'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

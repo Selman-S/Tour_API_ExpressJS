@@ -4,6 +4,8 @@ module.exports = {
 
     // Kullanıcının giriş yapıp yapmadığını kontrol eder
     isLogin: (req, res, next) => {
+      
+    
       if (req.user) {
         next();
       } else {

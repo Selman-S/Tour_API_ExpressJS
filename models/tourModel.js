@@ -42,6 +42,11 @@ const TourSchema = new mongoose.Schema({
     type: Boolean,
     default: true, // Varsayılan olarak aktif
   },
+
+  isActive: {
+    type: Boolean,
+    default: true, // Varsayılan olarak aktif
+  },
   dates: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'TourDate',

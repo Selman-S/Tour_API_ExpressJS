@@ -78,31 +78,37 @@ exports.updateUserProfile = async (req, res, next) => {
   }
 };
 
-// Kullanıcı hesabını silme (sadece kendi hesabı için)
+// Kullanıcı hesabını "isActive" false yaparak pasif hale getirme (sadece kendi hesabı için)
 exports.deleteUser = async (req, res, next) => {
   try {
-    const user = await User.findByIdAndDelete(req.user.id);
+    const user = await User.findById(req.user.id);
 
     if (!user) {
       return res.status(404).json({ message: 'Kullanıcı bulunamadı' });
     }
 
-    res.status(200).json({ success: true, message: 'Kullanıcı başarıyla silindi' });
+    user.isActive = false;
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Kullanıcı pasif hale getirildi.' });
   } catch (err) {
     next(err); // Hata olursa error middleware'ine aktar
   }
 };
 
-// Admin tarafından kullanıcı silme
+// Admin tarafından kullanıcıyı "isActive" false yapma
 exports.deleteUserByAdmin = async (req, res, next) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findById(req.params.id);
 
     if (!user) {
       return res.status(404).json({ message: 'Kullanıcı bulunamadı' });
     }
 
-    res.status(200).json({ success: true, message: 'Kullanıcı başarıyla silindi' });
+    user.isActive = false;
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Kullanıcı pasif hale getirildi.' });
   } catch (err) {
     next(err); // Hata olursa error middleware'ine aktar
   }
@@ -112,6 +118,8 @@ exports.deleteUserByAdmin = async (req, res, next) => {
 exports.updateUserRole = async (req, res, next) => {
   try {
     const { role } = req.body;
+     console.log(req.params);
+    
     const user = await User.findById(req.params.id);
 
     if (!user) {
