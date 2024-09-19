@@ -8,6 +8,7 @@ const errorMiddleware = require('./middlewares/errorMiddleware');
 // Rotaları yükle
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const tourRoutes = require('./routes/tourRoutes');
 // Çevresel değişkenleri yükle
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
 // Rotaları kullan
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/tours', tourRoutes);
 // PORT ayarı
 
 app.use(errorMiddleware);

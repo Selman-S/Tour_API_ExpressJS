@@ -1,25 +1,16 @@
-// models/photoModel.js
 const { mongoose } = require('../config/db');
 
 /* ------------------------------------------------------- */
 
 const PhotoSchema = new mongoose.Schema({
-
-  tour: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Tour',
-    required: true,
-  },
   url: {
     type: String,
-    trim: true,
-    required: true,
+    required: true, // Fotoğraf URL'si
   },
-  caption: {
+  description: {
     type: String,
     trim: true,
-  }
-
+  },
 }, { collection: 'photos', timestamps: true });
 
 /* ------------------------------------------------------- */

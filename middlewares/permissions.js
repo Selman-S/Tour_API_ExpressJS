@@ -32,6 +32,17 @@ module.exports = {
         res.status(403);
         throw new Error('NoPermission: Only agent can perform this action.');
       }
+    },
+
+
+     // Kullanıcının admin veya acenta olup olmadığını kontrol eder
+  isAgentOrAdmin: (req, res, next) => {
+    if (req.user && (req.user.role === 'admin' || req.user.role === 'agent')) {
+      next();
+    } else {
+      res.status(403);
+      throw new Error('NoPermission: Only agent or admin can perform this action.');
     }
+  }
   };
   

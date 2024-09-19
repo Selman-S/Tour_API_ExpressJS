@@ -1,10 +1,8 @@
-// models/tourModel.js
 const { mongoose } = require('../config/db');
 
 /* ------------------------------------------------------- */
 
 const TourSchema = new mongoose.Schema({
-
   name: {
     type: String,
     trim: true,
@@ -42,17 +40,32 @@ const TourSchema = new mongoose.Schema({
     type: Boolean,
     default: true, // Varsayılan olarak aktif
   },
-
-  isActive: {
-    type: Boolean,
-    default: true, // Varsayılan olarak aktif
+  startDate: {
+    type: Date,
+    required: true, // Tur başlangıç tarihi
   },
-  dates: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'TourDate',
-  }],
-
+  endDate: {
+    type: Date,
+    required: true, // Tur bitiş tarihi
+  },
+  capacity: {
+    type: Number,
+    required: true,
+    default: 50, // Varsayılan kontenjan
+  },
+  seatsTaken: {
+    type: Number,
+    default: 0, // Başlangıçta dolu koltuk sayısı
+  },
 }, { collection: 'tours', timestamps: true });
+
+TourSchema.pre('save', function(next) {
+  // Eğer turun bitiş tarihi geçmişse turu pasif yap
+  if (this.endDate < new Date()) {
+    this.isActive = false;
+  }
+  next();
+});
 
 /* ------------------------------------------------------- */
 

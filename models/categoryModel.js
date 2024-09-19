@@ -1,26 +1,27 @@
-// models/categoryModel.js
 const { mongoose } = require('../config/db');
 
 /* ------------------------------------------------------- */
 
 const CategorySchema = new mongoose.Schema({
-
   name: {
     type: String,
     trim: true,
     required: true,
-    unique: true
+    unique: true, // Her kategori adı benzersiz olmalı
   },
   description: {
     type: String,
     trim: true,
   },
+  photo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Photo', // Kategoriye ait fotoğraf
+  },
   parentCategory: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-    default: null,
-  }
-
+    ref: 'Category', // Üst kategori referansı
+    default: null, // Varsayılan olarak üst kategorisi yok
+  },
 }, { collection: 'categories', timestamps: true });
 
 /* ------------------------------------------------------- */
