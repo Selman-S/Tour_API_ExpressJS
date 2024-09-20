@@ -11,7 +11,11 @@ const userRoutes = require('./routes/userRoutes');
 const tourRoutes = require('./routes/tourRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const photoRoutes = require('./routes/photoRoutes');
+const promotionRoutes = require('./routes/promotionRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
 const searchSortPageMiddleware = require('./middlewares/searchSortPageMiddleware');
+
+
 // Çevresel değişkenleri yükle
 dotenv.config();
 
@@ -24,9 +28,9 @@ app.use(require('./middlewares/authenticationMiddleware'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(searchSortPageMiddleware);
-
 // HTTP isteklerini logla
 app.use(morgan('dev'));
+
 
 // Anasayfa rotası
 app.get('/', (req, res) => {
@@ -41,6 +45,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/tours', tourRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/photos', photoRoutes);
+app.use('/api/promotions', promotionRoutes);
+app.use('/api/bookings', bookingRoutes);
 // PORT ayarı
 
 app.use(errorMiddleware);
