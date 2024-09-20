@@ -9,6 +9,9 @@ const errorMiddleware = require('./middlewares/errorMiddleware');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const tourRoutes = require('./routes/tourRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const photoRoutes = require('./routes/photoRoutes');
+const searchSortPageMiddleware = require('./middlewares/searchSortPageMiddleware');
 // Çevresel değişkenleri yükle
 dotenv.config();
 
@@ -20,6 +23,7 @@ const app = express();
 app.use(require('./middlewares/authenticationMiddleware'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(searchSortPageMiddleware);
 
 // HTTP isteklerini logla
 app.use(morgan('dev'));
@@ -35,6 +39,8 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/tours', tourRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/photos', photoRoutes);
 // PORT ayarı
 
 app.use(errorMiddleware);

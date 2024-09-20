@@ -48,11 +48,13 @@ exports.listTours = async (req, res, next) => {
       .skip((page - 1) * limit)
       .limit(Number(limit));
 
+    const details = await res.getModelListDetails(Tour);
     const totalTours = await Tour.countDocuments(query);
 
     res.status(200).json({
       success: true,
       data: tours,
+      details,
       pagination: {
         total: totalTours,
         currentPage: page,

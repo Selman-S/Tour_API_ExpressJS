@@ -15,8 +15,11 @@ exports.uploadPhoto = async (req, res, next) => {
 // Tüm fotoğrafları listeleme (herkese açık)
 exports.listPhotos = async (req, res, next) => {
   try {
-    const photos = await Photo.find();
-    res.status(200).json({ success: true, data: photos });
+    const details = await res.getModelListDetails(Photo);
+
+    const photos = await res.getModelList(Photo, {  }, );
+   
+    res.status(200).json({ success: true, data: photos,details });
   } catch (err) {
     next(err);
   }
@@ -25,13 +28,12 @@ exports.listPhotos = async (req, res, next) => {
 // Fotoğraf silme (sadece admin)
 exports.deletePhoto = async (req, res, next) => {
   try {
-    const photo = await Photo.findById(req.params.id);
+    const photo = await Photo.findByIdAndDelete(req.params.id);
 
     if (!photo) {
       return res.status(404).json({ message: 'Fotoğraf bulunamadı' });
     }
 
-    await photo.remove();
     res.status(200).json({ success: true, message: 'Fotoğraf silindi.' });
   } catch (err) {
     next(err);

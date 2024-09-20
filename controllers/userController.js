@@ -5,8 +5,11 @@ const User = require('../models/userModel');
 exports.listUsers = async (req, res, next) => {
   try {
     // Sadece user rolüne sahip kullanıcıları getir, şifre alanlarını döndürme
-    const users = await User.find({ role: 'user' }).select('-password');
-    res.status(200).json({ success: true, data: users });
+    const details = await res.getModelListDetails(User);
+
+    const users = await res.getModelList(User.find({ role: 'user' }).select('-password'), {  }, );
+    res.status(200).json({ success: true, data: users,details });
+
   } catch (err) {
     next(err); // Hata olursa error middleware'ine aktar
   }
@@ -16,8 +19,10 @@ exports.listUsers = async (req, res, next) => {
 exports.listAgents = async (req, res, next) => {
   try {
     // Sadece acenta rolüne sahip kullanıcıları getir, şifre alanlarını döndürme
-    const agents = await User.find({ role: 'agent' }).select('-password');
-    res.status(200).json({ success: true, data: agents });
+    const details = await res.getModelListDetails(User);
+
+    const agents = await res.getModelList(User.find({ role: 'agent' }).select('-password'), {  }, );
+    res.status(200).json({ success: true, data: agents,details });
   } catch (err) {
     next(err); // Hata olursa error middleware'ine aktar
   }
@@ -28,8 +33,9 @@ exports.listAgents = async (req, res, next) => {
 exports.listAdmins = async (req, res, next) => {
   try {
     // Sadece admin rolüne sahip kullanıcıları getir, şifre alanlarını döndürme
+    const details = await res.getModelListDetails(User);
     const admins = await User.find({ role: 'admin' }).select('-password');
-    res.status(200).json({ success: true, data: admins });
+    res.status(200).json({ success: true, data: admins,details });
   } catch (err) {
     next(err); // Hata olursa error middleware'ine aktar
   }

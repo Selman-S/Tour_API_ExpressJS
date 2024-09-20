@@ -40,11 +40,16 @@ exports.updateCategory = async (req, res, next) => {
 // Tüm kategorileri listeleme (herkese açık)
 exports.listCategories = async (req, res, next) => {
   try {
-    const categories = await Category.find()
-      .populate('photo', 'url')
-      .populate('parentCategory', 'name'); // Parent kategoriyi getir
+    // const categories = await Category.find()
+    //   .populate('photo', 'url')
+    //   .populate('parentCategory', 'name'); // Parent kategoriyi getir
 
-    res.status(200).json({ success: true, data: categories });
+      const details = await res.getModelListDetails(Category);
+
+      const categories = await res.getModelList(Category, {  }, ).populate('photo', 'url')
+      .populate('parentCategory', 'name');
+
+    res.status(200).json({ success: true, data: categories,details });
   } catch (err) {
     next(err);
   }
