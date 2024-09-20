@@ -64,6 +64,11 @@ const BookingSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     default: null,
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true, // Turu oluşturan kullanıcı
   }
 
 }, { collection: 'bookings', timestamps: true });

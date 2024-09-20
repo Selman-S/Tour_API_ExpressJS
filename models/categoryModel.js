@@ -22,6 +22,11 @@ const CategorySchema = new mongoose.Schema({
     ref: 'Category', // Üst kategori referansı
     default: null, // Varsayılan olarak üst kategorisi yok
   },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true, // Turu oluşturan kullanıcı
+  }
 }, { collection: 'categories', timestamps: true });
 
 /* ------------------------------------------------------- */

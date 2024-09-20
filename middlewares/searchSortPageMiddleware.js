@@ -6,6 +6,17 @@ module.exports = (req, res, next) => {
     const search = req.query?.search || {}
     for (let key in search) search[key] = { $regex: search[key], $options: 'i' }
 
+    const startDate = req.query?.startDate || null;
+    const endDate = req.query?.endDate || null;
+
+    if (startDate) {
+        
+        search.startDate = { $gte: new Date(startDate) }
+    }
+    if (endDate) {
+        search.endDate = { $lte: new Date(endDate) }
+    }
+
 
     const sort = req.query?.sort || {}
 
@@ -22,6 +33,9 @@ module.exports = (req, res, next) => {
     // Run SearchingSortingPagination engine for Model:
     res.getModelList = async function (Model, filters = {}, populate = null) {
         const filtersAndSearch = { ...filters, ...search }
+
+        console.log(search);
+        
              
         return await Model.find(filtersAndSearch).sort(sort).skip(skip).limit(limit).populate(populate)
     }

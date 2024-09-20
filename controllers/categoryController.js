@@ -46,8 +46,9 @@ exports.listCategories = async (req, res, next) => {
 
       const details = await res.getModelListDetails(Category);
 
-      const categories = await res.getModelList(Category, {  }, ).populate('photo', 'url')
-      .populate('parentCategory', 'name');
+      const categories = await res.getModelList(Category, {  },["photo","parentCategory"] )
+      // .populate('photo', 'url')
+      // .populate('parentCategory', 'name');
 
     res.status(200).json({ success: true, data: categories,details });
   } catch (err) {
@@ -58,13 +59,12 @@ exports.listCategories = async (req, res, next) => {
 // Kategori silme (sadece admin)
 exports.deleteCategory = async (req, res, next) => {
   try {
-    const category = await Category.findById(req.params.id);
+    const category = await Category.findByIdAndDelete(req.params.id);
 
     if (!category) {
       return res.status(404).json({ message: 'Kategori bulunamadı' });
     }
 
-    await category.remove();
     res.status(200).json({ success: true, message: 'Kategori silindi.' });
   } catch (err) {
     next(err);

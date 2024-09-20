@@ -57,6 +57,11 @@ const TourSchema = new mongoose.Schema({
     type: Number,
     default: 0, // Başlangıçta dolu koltuk sayısı
   },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true, // Turu oluşturan kullanıcı
+  }
 }, { collection: 'tours', timestamps: true });
 
 TourSchema.pre('save', function(next) {

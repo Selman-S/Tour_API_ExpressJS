@@ -47,7 +47,12 @@ app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 8000;
 
+
+
+
+
 // Sunucuyu başlat
 app.listen(PORT, () => {
   console.log(`Sunucu ${PORT} portunda çalışıyor`);
+  
 });

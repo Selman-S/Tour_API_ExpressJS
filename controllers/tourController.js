@@ -29,37 +29,15 @@ exports.createTour = async (req, res, next) => {
 // Tüm turları listeleme (herkese açık)
 exports.listTours = async (req, res, next) => {
   try {
-    const { location, startDate, endDate, category, page = 1, limit = 10 } = req.query;
-
-    // Arama ve filtreleme koşulları
-    const query = {
-      isActive: true,
-      ...(location && { location: { $regex: location, $options: 'i' } }),
-      ...(startDate && endDate && {
-        startDate: { $gte: new Date(startDate) },
-        endDate: { $lte: new Date(endDate) },
-      }),
-      ...(category && { categories: category }),
-    };
-
-    const tours = await Tour.find(query)
-      .populate('categories', 'name')
-      .populate('photos', 'url')
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+  
+    const tours = await res.getModelList(Tour);
 
     const details = await res.getModelListDetails(Tour);
-    const totalTours = await Tour.countDocuments(query);
 
     res.status(200).json({
       success: true,
       data: tours,
       details,
-      pagination: {
-        total: totalTours,
-        currentPage: page,
-        totalPages: Math.ceil(totalTours / limit),
-      },
     });
   } catch (err) {
     next(err);
@@ -86,9 +64,10 @@ exports.getTourDetails = async (req, res, next) => {
 // Tur güncelleme (sadece tur oluşturucusu veya admin)
 exports.updateTour = async (req, res, next) => {
   try {
-    const { name, details, price, duration, location, categories, photos, startDate, endDate, capacity } = req.body;
+    const { name, details, price, duration, location, categories, photos, startDate, endDate, capacity,createdBy } = req.body;
 
     const tour = await Tour.findById(req.params.id);
+    
 
     if (!tour) {
       return res.status(404).json({ message: 'Tur bulunamadı' });

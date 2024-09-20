@@ -11,6 +11,11 @@ const PhotoSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true, // Turu oluşturan kullanıcı
+  }
 }, { collection: 'photos', timestamps: true });
 
 /* ------------------------------------------------------- */
